@@ -1,0 +1,6 @@
+@import "tailwindcss";
+
+/* Kode di bawah ini untuk mengetes apakah file ini terbaca oleh browser */
+body {
+    background-color: red !important;
+}
