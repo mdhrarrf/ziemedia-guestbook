@@ -1,9 +1,12 @@
 "use client";
 
 import { useState } from "react";
-// Link ini untuk pindah halaman
+// 1. Image harus di-import sendirian dari next/image
+import Image from "next/image";
+// 2. Link harus di-import sendirian dari next/link
 import Link from "next/link";
-// Ikon-ikon dari Lucide
+
+// 3. Pastikan TIDAK ADA kata 'Image' atau 'Link' di dalam kurung ini
 import {
   Send,
   User,
@@ -11,13 +14,23 @@ import {
   Phone,
   BookOpen,
   MessageSquare,
-  Mic2,
   Circle,
+  // Link, <--- HAPUS JIKA ADA INI
+  // Image, <--- HAPUS JIKA ADA INI
 } from "lucide-react";
+
+const LIST_HOST = [
+  "Muhammad Alvi Irpansyah, M.AB",
+  "Bilqisty Jazila Rizki",
+  "Gita Nur Fatonah Pertiwi",
+  "Lainnya",
+];
 
 export default function GuestbookPage() {
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState("");
+  const [selectedHost, setSelectedHost] = useState(""); // Untuk memantau pilihan di dropdown
+  const [customHost, setCustomHost] = useState(""); // Untuk menyimpan ketikan manual
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -31,7 +44,7 @@ export default function GuestbookPage() {
       jabatan: formData.get("jabatan"),
       instansi: formData.get("instansi"),
       pembahasan: formData.get("pembahasan"),
-      host: formData.get("host"),
+      host: selectedHost === "Lainnya" ? customHost : selectedHost, // Pilih salah satu
       pesan: formData.get("pesan"),
     };
 
@@ -73,32 +86,40 @@ export default function GuestbookPage() {
 
           <div className="relative z-10">
             {/* Logo Section */}
-            <div className="flex items-center gap-4 mb-12">
-              <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center shadow-xl transform -rotate-3">
-                <Mic2 className="text-[#F97316]" size={28} />
+            <div className="flex items-center gap-4 mb-1">
+              {/* Kontainer kita buat w-32 (128px) atau w-40 (160px) agar benar-benar besar */}
+              <div className="w-40 h-40 flex items-center justify-center overflow-hidden relative">
+                <Image
+                  src="/logo-ziemedia.png"
+                  alt="Zie Media Logo"
+                  width={160} // Sesuaikan dengan w-32 (32 * 4 = 128)
+                  height={160} // Sesuaikan dengan h-32
+                  className="object-contain" // Hapus 'p-2' agar gambar tidak mengecil karena padding
+                  priority // Tambahkan ini agar logo muncul paling cepat saat web dibuka
+                />
               </div>
-              <div className="flex flex-col">
-                <span className="text-xl font-black tracking-tighter leading-none">
+              {/* <div className="flex flex-col">
+                <span className="text-xl font-black tracking-tighter leading-none text-white">
                   ZIE MEDIA
                 </span>
                 <span className="text-[10px] font-bold tracking-[0.3em] text-orange-400 uppercase leading-none mt-1.5">
                   Studio Production
                 </span>
-              </div>
+              </div> */}
             </div>
 
-            <h1 className="text-4xl font-extrabold tracking-tight mb-6 leading-tight">
+            <h1 className="text-4xl font-extrabold ml-4 tracking-tight mb-6 leading-tight">
               Buku Tamu <br />
-              Digital Studio
+              Podcast Zie Media
             </h1>
 
-            <p className="text-blue-100/70 text-sm leading-relaxed max-w-70 font-medium">
+            <p className="text-blue-100/70 text-sm ml-4 leading-relaxed max-w-70 font-medium mb-10">
               Selamat datang di Studio Zie Media. Mohon catat kehadiran Anda
               untuk keperluan dokumentasi dan arsip kami.
             </p>
           </div>
 
-          <div className="relative z-10">
+          <div className="relative z-10 ml-4">
             <div className="inline-flex items-center gap-2.5 bg-white/10 backdrop-blur-md border border-white/10 px-4 py-2 rounded-full mb-8">
               <Circle
                 className="text-orange-500 fill-orange-500 animate-pulse"
@@ -112,7 +133,7 @@ export default function GuestbookPage() {
             <p className="text-[10px] font-black tracking-[0.25em] text-blue-300/40 uppercase mb-1">
               Location
             </p>
-            <p className="text-xs font-bold">Batam City, Indonesia</p>
+            <p className="text-xs font-bold">Cianjur, Indonesia</p>
           </div>
         </div>
 
@@ -222,17 +243,60 @@ export default function GuestbookPage() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Host */}
-              <div className="group space-y-2">
+              {/* BAGIAN HOST */}
+              <div className="group space-y-2 text-left">
                 <label className="text-[10px] font-black text-slate-600 uppercase tracking-widest ml-1 transition-colors group-focus-within:text-[#F97316]">
                   Nama Host (Tim Zie)
                 </label>
-                <input
-                  name="host"
-                  required
-                  className="w-full bg-white border-2 border-slate-200 rounded-2xl px-5 py-4 text-sm font-bold text-slate-700 outline-none focus:border-[#F97316] focus:ring-4 focus:ring-orange-500/5 transition-all shadow-sm placeholder:text-slate-300"
-                  placeholder="Nama Host Pemandu"
-                />
+                <div className="space-y-3">
+                  <div className="relative">
+                    <select
+                      name="host_select"
+                      required
+                      value={selectedHost}
+                      onChange={(e) => setSelectedHost(e.target.value)}
+                      className="w-full bg-white border-2 border-slate-200 rounded-2xl px-5 py-4 text-sm font-bold text-slate-700 outline-none focus:border-[#F97316] focus:ring-4 focus:ring-orange-500/5 transition-all shadow-sm appearance-none cursor-pointer"
+                    >
+                      <option value="" disabled>
+                        -- Pilih Nama Host Pemandu --
+                      </option>
+                      {LIST_HOST.map((host) => (
+                        <option key={host} value={host}>
+                          {host}
+                        </option>
+                      ))}
+                    </select>
+                    <div className="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                      <svg
+                        className="w-5 h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M19 9l-7 7-7-7"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+
+                  {/* JIKA "Lainnya" DIPILIH, MUNCULKAN INPUT INI */}
+                  {selectedHost === "Lainnya" && (
+                    <div className="animate-in slide-in-from-top-2 duration-300">
+                      <input
+                        type="text"
+                        placeholder="Masukkan Nama Host Spesial..."
+                        required
+                        value={customHost}
+                        onChange={(e) => setCustomHost(e.target.value)}
+                        className="w-full bg-orange-50 border-2 border-orange-200 rounded-2xl px-5 py-4 text-sm font-bold text-slate-700 outline-none focus:border-orange-500 transition-all shadow-inner"
+                      />
+                    </div>
+                  )}
+                </div>
               </div>
 
               {/* Kritik/Saran */}
@@ -242,13 +306,13 @@ export default function GuestbookPage() {
                 </label>
                 <div className="relative">
                   <MessageSquare
-                    className="absolute left-4 top-4 text-slate-400 transition-colors group-focus-within:text-[#F97316]"
+                    className="absolute left-4 top-4.5 text-slate-400 transition-colors group-focus-within:text-[#F97316]"
                     size={18}
                   />
                   <textarea
                     name="pesan"
                     rows={1}
-                    className="w-full bg-white border-2 border-slate-200 rounded-2xl pl-12 pr-4 py-3 text-sm font-bold text-slate-700 outline-none focus:border-[#F97316] focus:ring-4 focus:ring-orange-500/5 transition-all shadow-sm resize-none placeholder:text-slate-300"
+                    className="w-full bg-white border-2 border-slate-200 rounded-2xl pl-12 pr-4 py-4 text-sm font-bold text-slate-700 outline-none focus:border-[#F97316] focus:ring-4 focus:ring-orange-500/5 transition-all shadow-sm resize-none placeholder:text-slate-300"
                     placeholder="Opsional..."
                   ></textarea>
                 </div>
@@ -281,7 +345,7 @@ export default function GuestbookPage() {
           {/* FOOTER SECTION DENGAN PINTU ADMIN */}
           <div className="p-8 bg-gray-50/50 text-center border-t border-slate-100 flex flex-col items-center gap-4">
             <p className="text-[10px] text-slate-400 font-bold tracking-[0.3em] uppercase">
-              © 2024 Zie Media Production Studio
+              © 2026 Zie Media • SMKN 1 Cianjur
             </p>
 
             {/* PINTU RAHASIA ADMIN */}
