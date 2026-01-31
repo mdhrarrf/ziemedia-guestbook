@@ -1,6 +1,9 @@
 "use client";
 
 import { useState } from "react";
+// Link ini untuk pindah halaman
+import Link from "next/link";
+// Ikon-ikon dari Lucide
 import {
   Send,
   User,
@@ -10,7 +13,6 @@ import {
   MessageSquare,
   Mic2,
   Circle,
-  Link,
 } from "lucide-react";
 
 export default function GuestbookPage() {
@@ -276,21 +278,21 @@ export default function GuestbookPage() {
               </div>
             )}
           </form>
-        </div>
-        {/* FOOTER SECTION DENGAN PINTU ADMIN */}
-        <div className="p-8 bg-gray-50/50 text-center border-t border-slate-100 flex flex-col items-center gap-4">
-          <p className="text-[10px] text-slate-400 font-bold tracking-[0.3em] uppercase">
-            © 2024 Zie Media Production Studio
-          </p>
+          {/* FOOTER SECTION DENGAN PINTU ADMIN */}
+          <div className="p-8 bg-gray-50/50 text-center border-t border-slate-100 flex flex-col items-center gap-4">
+            <p className="text-[10px] text-slate-400 font-bold tracking-[0.3em] uppercase">
+              © 2024 Zie Media Production Studio
+            </p>
 
-          {/* PINTU RAHASIA ADMIN */}
-          <Link
-            href="/admin/login"
-            className="group flex items-center gap-2 text-[9px] font-black text-slate-300 hover:text-[#1E3A8A] transition-all uppercase tracking-[0.2em] border border-slate-200 px-3 py-1.5 rounded-lg hover:border-[#1E3A8A]/20 hover:bg-white"
-          >
-            <div className="w-1.5 h-1.5 bg-slate-300 group-hover:bg-orange-500 rounded-full transition-colors"></div>
-            Admin Access
-          </Link>
+            {/* PINTU RAHASIA ADMIN */}
+            <Link
+              href="/admin/login"
+              className="group flex items-center gap-2 text-[9px] font-black text-slate-300 hover:text-[#1E3A8A] transition-all uppercase tracking-[0.2em] border border-slate-200 px-3 py-1.5 rounded-lg hover:border-[#1E3A8A]/20 hover:bg-white"
+            >
+              <div className="w-1.5 h-1.5 bg-slate-300 group-hover:bg-orange-500 rounded-full transition-colors"></div>
+              Admin Access
+            </Link>
+          </div>
         </div>
       </div>
     </main>
